@@ -10,7 +10,7 @@ GET_MP3 = "Get mp3"
 RANDOM_IMG_URL = "https://picsum.photos/1200"
 
 # Declare IMAGE_COUNTER as a global variable
-global IMAGE_COUNTER
+global IMAGE_COUNTER    
 IMAGE_COUNTER = 0
 
 

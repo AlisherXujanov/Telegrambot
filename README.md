@@ -17,3 +17,4 @@
     updater.idle()
 9.  Run the python file and start chatting with your bot.
 
+<!-- in render you need to use ***streamlit run main.py*** -->
