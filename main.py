@@ -10,7 +10,7 @@ GET_MP3 = "Get mp3"
 RANDOM_IMG_URL = "https://picsum.photos/1200"
 
 # Declare IMAGE_COUNTER as a global variable
-global IMAGE_COUNTER    
+global IMAGE_COUNTER
 IMAGE_COUNTER = 0
 
 
@@ -39,7 +39,7 @@ def _send_local_file(update, context):
         RU: Мы должны открыть файл в двоичном режиме,
         иначе Telegram не сможет обработать его правильно
     """
-    with open("teleBot/me.jpg", "rb") as f:
+    with open("me.jpg", "rb") as f:
         """
                 update.message.reply_photo(photo, caption=None)
             photo   - Photo to send
@@ -49,7 +49,7 @@ def _send_local_file(update, context):
 
 
 def _send_mp3(update: Update, context: CallbackContext):
-    with open("teleBot/music.mp3", "rb") as f:
+    with open("music.mp3", "rb") as f:
         update.message.reply_audio(f, caption="This is mp3")
 
 
