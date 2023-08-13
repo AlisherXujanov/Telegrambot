@@ -53,7 +53,47 @@ def _send_mp3(update: Update, context: CallbackContext):
         update.message.reply_audio(f, caption="This is mp3")
 
 
-def get_buttons(update: Update, context: CallbackContext):
+def get_attached_buttons(update: Update, context: CallbackContext):
+    """
+        There are some types of buttons
+            1. KeyboardButton  => is used to create a simple button that is displayed below the message
+            2. ReplyKeyboardMarkup => is used to create a custom keyboard with buttons
+                ---
+                We use message handler function to handle buttons below message (see: message_handler_for_below_buttons)
+            ----------------
+            3. InlineKeyboardButton => is used to create a button that is attached to the message
+            4. InlineKeyboardMarkup => is used to create a custom keyboard with buttons that are attached to the message
+                ---
+                We use callback query handler function to handle buttons attached to the message
+                (see: callback_query_handler_for_attached_buttons)
+    """
+
+    buttons = [
+        [InlineKeyboardButton("Button 1", callback_data="1")],
+        [InlineKeyboardButton("Button 2", callback_data="2")]
+    ]
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Choose option:",
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
+
+def get_buttons_below_message(update: Update, context: CallbackContext):
+    """
+        There are some types of buttons
+            1. KeyboardButton  => is used to create a simple button that is displayed below the message
+            2. ReplyKeyboardMarkup => is used to create a custom keyboard with buttons
+                ---
+                We use message handler function to handle buttons below message (see: message_handler_for_below_buttons)
+            ----------------
+            3. InlineKeyboardButton => is used to create a button that is attached to the message
+            4. InlineKeyboardMarkup => is used to create a custom keyboard with buttons that are attached to the message
+                ---
+                We use callback query handler function to handle buttons attached to the message
+                (see: callback_query_handler_for_attached_buttons)
+    """
+
     buttons = [
         [KeyboardButton(RANDOM_IMAGE)],
         [KeyboardButton(GET_MP3)]
@@ -65,7 +105,16 @@ def get_buttons(update: Update, context: CallbackContext):
     )
 
 
-def message_handler(update: Update, context: CallbackContext):
+def callback_query_handler_for_attached_buttons(update: Update, context: CallbackContext):
+    query = update.callback_query
+    query.answer()
+    if query.data == "1":
+        query.edit_message_text(text="You pressed button 1")
+    elif query.data == "2":
+        query.edit_message_text(text="You pressed button 2")
+
+
+def message_handler_for_below_buttons(update: Update, context: CallbackContext):
     # Use the global keyword to modify IMAGE_COUNTER
     global IMAGE_COUNTER
     IMAGE_COUNTER += 1
@@ -92,8 +141,14 @@ updater = Updater(TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(CommandHandler("help", help))
-dispatcher.add_handler(CommandHandler('buttons', get_buttons))
-dispatcher.add_handler(MessageHandler(Filters.text, message_handler))
+dispatcher.add_handler(CommandHandler(
+    'buttons_below', get_buttons_below_message))
+dispatcher.add_handler(CommandHandler(
+    'buttons_attached', get_attached_buttons))
+dispatcher.add_handler(MessageHandler(
+    Filters.text, message_handler_for_below_buttons))
+dispatcher.add_handler(CallbackQueryHandler(
+    callback_query_handler_for_attached_buttons))
 
 
 updater.start_polling()
