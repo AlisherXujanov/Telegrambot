@@ -142,10 +142,14 @@ updater = Updater(TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(CommandHandler("help", help))
-dispatcher.add_handler(CommandHandler('buttons_below', get_buttons_below_message))
-dispatcher.add_handler(CommandHandler('buttons_attached', get_attached_buttons))
-dispatcher.add_handler(MessageHandler(Filters.text, message_handler_for_below_buttons))
-dispatcher.add_handler(CallbackQueryHandler(callback_query_handler_for_attached_buttons))
+dispatcher.add_handler(CommandHandler(
+    'buttons_below', get_buttons_below_message))
+dispatcher.add_handler(CommandHandler(
+    'buttons_attached', get_attached_buttons))
+dispatcher.add_handler(MessageHandler(
+    Filters.text, message_handler_for_below_buttons))
+dispatcher.add_handler(CallbackQueryHandler(
+    callback_query_handler_for_attached_buttons))
 
 
 updater.start_polling()
