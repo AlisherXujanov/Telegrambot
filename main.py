@@ -53,19 +53,19 @@ def _send_mp3(update: Update, context: CallbackContext):
         update.message.reply_audio(f, caption="This is mp3")
 
 
-def get_attached_buttons(update: Update, context: CallbackContext):
+def get_inline_buttons(update: Update, context: CallbackContext):
     """
         There are some types of buttons
             1. KeyboardButton  => is used to create a simple button that is displayed below the message
             2. ReplyKeyboardMarkup => is used to create a custom keyboard with buttons
                 ---
-                We use message handler function to handle buttons below message (see: message_handler_for_below_buttons)
+                We use message handler function to handle buttons below message (see: echo)
             ----------------
             3. InlineKeyboardButton => is used to create a button that is attached to the message
             4. InlineKeyboardMarkup => is used to create a custom keyboard with buttons that are attached to the message
                 ---
                 We use callback query handler function to handle buttons attached to the message
-                (see: callback_query_handler_for_attached_buttons)
+                (see: reply_to_buttons)
     """
 
     buttons = [
@@ -79,19 +79,19 @@ def get_attached_buttons(update: Update, context: CallbackContext):
     )
 
 
-def get_buttons_below_message(update: Update, context: CallbackContext):
+def get_block_buttons(update: Update, context: CallbackContext):
     """
         There are some types of buttons
             1. KeyboardButton  => is used to create a simple button that is displayed below the message
             2. ReplyKeyboardMarkup => is used to create a custom keyboard with buttons
                 ---
-                We use message handler function to handle buttons below message (see: message_handler_for_below_buttons)
+                We use message handler function to handle buttons below message (see: echo)
             ----------------
             3. InlineKeyboardButton => is used to create a button that is attached to the message
             4. InlineKeyboardMarkup => is used to create a custom keyboard with buttons that are attached to the message
                 ---
                 We use callback query handler function to handle buttons attached to the message
-                (see: callback_query_handler_for_attached_buttons)
+                (see: reply_to_buttons)
     """
 
     buttons = [
@@ -105,7 +105,7 @@ def get_buttons_below_message(update: Update, context: CallbackContext):
     )
 
 
-def callback_query_handler_for_attached_buttons(update: Update, context: CallbackContext):
+def reply_to_buttons(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
     if query.data == "1":
@@ -114,7 +114,15 @@ def callback_query_handler_for_attached_buttons(update: Update, context: Callbac
         query.edit_message_text(text="You pressed button 2")
 
 
-def message_handler_for_below_buttons(update: Update, context: CallbackContext):
+def echo(update: Update, context: CallbackContext):
+    """
+        Filters.text => is used to filter messages that contain text 
+        (or other types of content, like audio, video, etc.)
+        When user writes something to the bot, the bot will reply with the same message
+        by using this:
+            update.message.reply_text(update.message.text)
+    """
+
     # Use the global keyword to modify IMAGE_COUNTER
     global IMAGE_COUNTER
     IMAGE_COUNTER += 1
@@ -127,30 +135,35 @@ def message_handler_for_below_buttons(update: Update, context: CallbackContext):
     elif update.message.text == GET_MP3:
         _send_mp3(update, context)
 
+    else:
+        user_text = update.message.text
+        reversed = user_text[::-1]
+        update.message.reply_text(reversed)
+
 
 def help(update, context):
     update.message.reply_text("""
-/start   - Start the bot
-/help    - Help
-/buttons_below    - Get Optional buttons
-/buttons_attached - Get Attached buttons
-"""
-                              )
+/start          - Start the bot
+/help           - Help
+/block_buttons  - Get Optional buttons
+/inline_buttons - Get Attached buttons
+""")
 
 
 updater = Updater(TOKEN, use_context=True)
 dispatcher = updater.dispatcher
-dispatcher.add_handler(CommandHandler("start", start))
-dispatcher.add_handler(CommandHandler("help", help))
-dispatcher.add_handler(CommandHandler(
-    'buttons_below', get_buttons_below_message))
-dispatcher.add_handler(CommandHandler(
-    'buttons_attached', get_attached_buttons))
-dispatcher.add_handler(MessageHandler(
-    Filters.text, message_handler_for_below_buttons))
-dispatcher.add_handler(CallbackQueryHandler(
-    callback_query_handler_for_attached_buttons))
 
+dispatcher.add_handler(CommandHandler("start", start))
+
+dispatcher.add_handler(CommandHandler("help", help))
+
+dispatcher.add_handler(CommandHandler('block_buttons', get_block_buttons))
+
+dispatcher.add_handler(CommandHandler('inline_buttons', get_inline_buttons))
+
+dispatcher.add_handler(CallbackQueryHandler(reply_to_buttons))
+
+dispatcher.add_handler(MessageHandler(Filters.text, echo))
 
 updater.start_polling()
 updater.idle()
