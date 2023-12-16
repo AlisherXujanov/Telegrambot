@@ -25,28 +25,28 @@ logging.basicConfig(
 )
 
 
-# async def block_button(update: Update, context: ContextTypes) -> None:
-#     """Sends a message with three inline buttons attached."""
-#     keyboard = [
-#         [KeyboardButton("Option 1"), KeyboardButton("Option 2")],
-#         [KeyboardButton("Option 3")],
-#     ]
-#     reply_markup = ReplyKeyboardMarkup(keyboard)
-#     await update.message.reply_text("Please choose:", reply_markup=reply_markup)
+async def block_button(update: Update, context: ContextTypes) -> None:
+    """Sends a message with three inline buttons attached."""
+    keyboard = [
+        [KeyboardButton("Hello World"), KeyboardButton("Option 2")],
+        [KeyboardButton("Option 3")],
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard)
+    await update.message.reply_text("Please choose:", reply_markup=reply_markup)
 
 
 async def start(update: Update, context: ContextTypes) -> None:
     """Sends a message with three inline buttons attached."""
-    # keyboard = [
-    #     [
-    #         InlineKeyboardButton("Option 1", callback_data="1"),
-    #         InlineKeyboardButton("Option 2", callback_data="2"),
-    #     ],
-    #     [InlineKeyboardButton("Option 3", callback_data="3")],
-    # ]
-    # reply_markup = InlineKeyboardMarkup(keyboard)
-    # await update.message.reply_text("Please choose:", reply_markup=reply_markup)
-    await update.message.reply_text("Hello world! This is me!")
+    keyboard = [
+        [
+            InlineKeyboardButton("Option 1", callback_data="1",
+                                 url="https://t.me/+105hRD3w-xY2OTgy"),
+            InlineKeyboardButton("Option 2", callback_data="2"),
+        ],
+        [InlineKeyboardButton("Option 3", callback_data="3")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Please choose:", reply_markup=reply_markup)
 
 
 async def inline_button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -74,7 +74,6 @@ async def inline_button_handler(update: Update, context: ContextTypes.DEFAULT_TY
 
 
 
-
 async def help(update: Update, context: ContextTypes) -> None:
     return await update.message.reply_text("""
 /help - Show this message
@@ -96,14 +95,14 @@ async def handle_responses(update: Update, context: ContextTypes) -> str:
     if "how are you" in text:
         response = response + "I'm fine, thank you. And you? \n"
 
-    with open("me.jpg", "rb") as f:
-        """
-                update.message.reply_photo(photo, caption=None)
-            photo   - Photo to send
-            caption - Photo caption, 0-1024 characters
-        """
-        await update.message.reply_photo(f, caption="Hello world! This is me!")
-        
+    # with open("me.jpg", "rb") as f:
+    #     """
+    #             update.message.reply_photo(photo, caption=None)
+    #         photo   - Photo to send
+    #         caption - Photo caption, 0-1024 characters
+    #     """
+    #     await update.message.reply_photo(f, caption="Hello world! This is me!")
+
     await update.message.reply_text(response)
 
 
@@ -117,9 +116,9 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("help", help))
 
     # # Inline button
-    # app.add_handler(CallbackQueryHandler(inline_button_handler))
+    app.add_handler(CallbackQueryHandler(inline_button_handler))
     # # Block button
-    # app.add_handler(CommandHandler("bbutton", block_button))
+    app.add_handler(CommandHandler("bbutton", block_button))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_responses))
