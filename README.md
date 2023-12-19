@@ -54,3 +54,8 @@ dispatcher.add_handler(start_handler)
 ```
 
 In both examples, when the /start command is sent, a message with a custom keyboard is sent. The user can then select an option from the keyboard.
+
+
+# To create requirements.txt file
+1. ```pipenv lock -r > requirements.txt```  - is outdated
+2. 🎯 New version is: ```pipenv run pip freeze  > requirements.txt``` 

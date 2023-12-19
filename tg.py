@@ -73,7 +73,6 @@ async def inline_button_handler(update: Update, context: ContextTypes.DEFAULT_TY
     )
 
 
-
 async def help(update: Update, context: ContextTypes) -> None:
     return await update.message.reply_text("""
 /help - Show this message
